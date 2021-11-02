@@ -1,0 +1,7 @@
+{
+  "repos": [
+    { "name": "ssv-prater", "address": "0xea6d433366c42faecbd4c604e81a138d28666c59" },
+    { "name": "nethermind-xdai", "address": "0x18da083461d863cc4d07cc7187093f18f2b8b860" },
+    { "name": "prysm-prater", "address": "0x448bfb454718f20941fe8a1bfa63a0024f21ba50" }
+  ]
+}
