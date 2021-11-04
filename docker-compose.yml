@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  bot:
+    build:
+      context: "./build"
+    environment:
+      GO_ENV: "development"
