@@ -4,27 +4,47 @@ import (
 	"announcements-bot/discord"
 	"announcements-bot/eth"
 	"fmt"
-	"time"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-/* func init() {
-	fmt.Println("Setting up DAppNode announcements bot")
+var gethRpc , discordToken , discordChannel string
 
-	environment := os.Getenv("token")
-	if environment == "TEST" {
-		viper.SetConfigFile(".env")
-	} else if environment == "PRODUCTION" {
+
+func init() {
+	fmt.Println("Setting up environment variables")
+
+	environment := os.Getenv("GO_ENV")
+	if environment == "development" {
+		err := godotenv.Load(".env")
+		if err != nil {
+			log.Fatal(err)
+		}
+		gethRpc = os.Getenv("GETH_RPC")
+		discordToken = os.Getenv("DISCORD_TOKEN")
+		discordChannel = os.Getenv("ANNOUNCEMENTS_CHANNEL_ID")
+	} else if environment == "production" {
 
 	} else {
-
+		panic("Environment not set")
 	}
 
-} */
-
-var gethRpc string = "wss://mainnet.infura.io/ws/v3/e6c920580178424bbdf6dde266bfb5bd"
+	// throw error if env vars are not set
+	if gethRpc == "" {
+		panic("gethRpc not set")
+	}
+	if discordToken == "" {
+		panic("discordToken not set")
+	}
+	if discordChannel == "" {
+		panic("discordChannel not set")
+	}
+} 
   
 func main() {
-	fmt.Println("Starting...")
+	fmt.Println("=== Starting application ===")
 
 	// Connect to ETH node
 	fmt.Println("Connecting to Ethereum node...")
@@ -44,7 +64,7 @@ func main() {
 
 	// Get discord session
 	fmt.Println("Getting Discord session...")
-	discord, err := discord.GetDiscordSession()
+	discord, err := discord.GetDiscordSession(discordToken)
 	if err != nil {
 		err := fmt.Errorf("unable to open discord session: %w", err)
 		fmt.Println(err)
@@ -52,17 +72,13 @@ func main() {
 	
 	// Start go rutine eth suscription to "NewVersion" event of all repos addresses
 	fmt.Println("Go rutine NewVersion event subscription...")
-	go eth.SubscribeNewVersion(ethClient, discord, repos)
+	go eth.SubscribeNewVersion(ethClient, discord, discordChannel, repos)
 
 	// Start go rutine eth suscription to "NewRepo" event of Registry 
 	fmt.Println("Go rutine NewRepo event subscription...")
-	go eth.SubscribeNewRepo(ethClient, discord)
+	go eth.SubscribeNewRepo(ethClient, discord, discordChannel)
 
-	time.Sleep(10000000*1000000)
+	fmt.Println("Application successfully started")
+	// Wait foerever
+	select{}
 }
-
-
-
-
-  
-

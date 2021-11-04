@@ -4,10 +4,9 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func GetDiscordSession() (*discordgo.Session, error) {
+func GetDiscordSession(discordToken string) (*discordgo.Session, error) {
 	// Create discord bot
-	token := "ODk5NjUzNDY2NjAxOTQ3MTk3.YW15lQ.k9Xamjdnk2P1PQ0aGfiV8arx75Q"
-	discord, err := discordgo.New("Bot " + token)
+	discord, err := discordgo.New("Bot " + discordToken)
 	if err != nil {
 		return nil, err
 	}

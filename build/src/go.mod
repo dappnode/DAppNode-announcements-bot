@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/ethereum/go-ethereum v1.10.11
+	github.com/joho/godotenv v1.4.0
 )
 
 require (

@@ -16,20 +16,17 @@ import (
 )
 
 // Subscribe to "NewVersion" events
-func SubscribeNewVersion(ethClient *ethclient.Client, discord *discordgo.Session, repos []NewRepoEvent) {
+func SubscribeNewVersion(ethClient *ethclient.Client, discord *discordgo.Session, discordChannel string, repos []NewRepoEvent) {
     // Create query with all repos addresses
     contractAbi, err := abi.JSON(strings.NewReader(registryAbi))
     if err != nil {
         log.Fatal(err)
     }
-    topic := []common.Hash{}
-    topics := [][]common.Hash{topic}
+
 	query := ethereum.FilterQuery{
         Addresses:  GetAddresses(repos),
-        Topics:     topics,
+        Topics:     [][]common.Hash{{contractAbi.Events["NewVersion"].ID}},
     }
-
-    WriteNewRepoMessage(discord, &repos[len(repos)-1])
 
     logs := make(chan types.Log)
     sub, err := ethClient.SubscribeFilterLogs(context.Background(), query, logs)
@@ -41,7 +38,7 @@ func SubscribeNewVersion(ethClient *ethclient.Client, discord *discordgo.Session
         select {
             case err := <-sub.Err():
                 log.Fatal(err)
-            case vLog := <-logs:
+            case vLog := <-logs:       
                 fmt.Println(vLog) // pointer to event log
                 event, err := contractAbi.Unpack("NewVersion", vLog.Data)
                 if err != nil {
@@ -54,7 +51,7 @@ func SubscribeNewVersion(ethClient *ethclient.Client, discord *discordgo.Session
                 eventParsed := NewVersionEvent{versionId: versionId, semanticVersion: semanticVersion}
 
                 // Write New version message
-                WriteNewVersionMessage(discord, &eventParsed)
+                WriteNewVersionMessage(discord, discordChannel, &eventParsed)
             }
     }
 }

@@ -15,19 +15,21 @@ import (
 )
 
 // Subscribe to "NewRepo" events
-func SubscribeNewRepo(client *ethclient.Client, discord *discordgo.Session) {
+func SubscribeNewRepo(client *ethclient.Client, discord *discordgo.Session, discordChannel string) {
 	contractAddress := common.HexToAddress("0x266bfdb2124a68beb6769dc887bd655f78778923")
-    query := ethereum.FilterQuery{
-        Addresses: []common.Address{contractAddress},
-    }
 
-    logs := make(chan types.Log)
-    sub, err := client.SubscribeFilterLogs(context.Background(), query, logs)
+    contractAbi, err := abi.JSON(strings.NewReader(repositoryAbi))
     if err != nil {
         log.Fatal(err)
     }
 
-    contractAbi, err := abi.JSON(strings.NewReader(repositoryAbi))
+    query := ethereum.FilterQuery{
+        Addresses: []common.Address{contractAddress},
+        Topics:    [][]common.Hash{{contractAbi.Events["NewRepo"].ID}},
+    }
+
+    logs := make(chan types.Log)
+    sub, err := client.SubscribeFilterLogs(context.Background(), query, logs)
     if err != nil {
         log.Fatal(err)
     }
@@ -50,7 +52,7 @@ func SubscribeNewRepo(client *ethclient.Client, discord *discordgo.Session) {
 
                 // Write New version message
                 eventParsed := NewRepoEvent{id: common.BytesToAddress(id[:]), name: name, address: address}
-                WriteNewRepoMessage(discord, &eventParsed)
+                WriteNewRepoMessage(discord, discordChannel, &eventParsed)
         }
     }
 }

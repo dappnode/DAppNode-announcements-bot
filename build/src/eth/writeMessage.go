@@ -7,7 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func WriteNewVersionMessage(discord *discordgo.Session, versionEvent *NewVersionEvent) {
+func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, versionEvent *NewVersionEvent) {
 	message := fmt.Sprintf("New DAppNode package version!\nVersionId: %d\nSemantic version: %d", versionEvent.versionId, versionEvent.semanticVersion)
 	err := discord.Open()
 	if err != nil {
@@ -16,7 +16,7 @@ func WriteNewVersionMessage(discord *discordgo.Session, versionEvent *NewVersion
 		return
 	}
 
-	_, err = discord.ChannelMessageSend(announcementsChannelId, message)
+	_, err = discord.ChannelMessageSend(discordChannel, message)
 	if err != nil {
 		err := fmt.Errorf("unable to send NewVersion message: %w", err)
 		log.Fatal(err)
@@ -24,7 +24,7 @@ func WriteNewVersionMessage(discord *discordgo.Session, versionEvent *NewVersion
 	discord.Close()
 }
 
-func WriteNewRepoMessage(discord *discordgo.Session, repoEvent *NewRepoEvent) {
+func WriteNewRepoMessage(discord *discordgo.Session, discordChannel string, repoEvent *NewRepoEvent) {
 	message := fmt.Sprintf("New DAppNode package %s!", repoEvent.name)
 	err := discord.Open()
 	if err != nil {
@@ -33,7 +33,7 @@ func WriteNewRepoMessage(discord *discordgo.Session, repoEvent *NewRepoEvent) {
 		return
 	}
 
-	_, err = discord.ChannelMessageSend(announcementsChannelId, message)
+	_, err = discord.ChannelMessageSend(discordChannel, message)
 	if err != nil {
 		err := fmt.Errorf("unable to send NewRepo message: %w", err)
 		log.Fatal(err)
