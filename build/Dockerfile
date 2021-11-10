@@ -6,7 +6,7 @@ RUN apt update && apt install gcc
 COPY . .
 WORKDIR /usr/src/app/src
 RUN go get -v -t ./...
-RUN go build -o main main.go
+RUN go build -o main ./cmd/DAppNode-announcements-bot/main.go
 
 # RUNNER
 FROM golang as runner

@@ -23,13 +23,13 @@ func TestGetRepos(t *testing.T) {
 	expectedAddress := common.HexToAddress("0x8730413f2d7aF5a0cF63a988a0F6417fec05F328")
 	expectedName := "rotki"
 
-	if rotkiEvent.name != expectedName {
+	if rotkiEvent.Name != expectedName {
 		t.Error("rotki event name is not rotki")
 	}
-	if rotkiEvent.id != expectedId {
-		t.Errorf("event id expected %s but received %s", rotkiEvent.id.Hex(), expectedId.Hex())
+	if rotkiEvent.Id != expectedId {
+		t.Errorf("event id expected %s but received %s", rotkiEvent.Id.Hex(), expectedId.Hex())
 	}
-	if rotkiEvent.address != expectedAddress {
-		t.Errorf("event id expected %s but received %s", rotkiEvent.address.Hex(), expectedAddress.Hex())
+	if rotkiEvent.Address != expectedAddress {
+		t.Errorf("event id expected %s but received %s", rotkiEvent.Address.Hex(), expectedAddress.Hex())
 	}
 }

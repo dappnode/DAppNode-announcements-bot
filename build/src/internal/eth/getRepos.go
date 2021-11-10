@@ -52,7 +52,7 @@ func GetRepos(ethClient *ethclient.Client) ([]NewRepoEvent, error) {
 		name := event[1].(string)
 		address := event[2].(common.Address)
 
-		eventParsed := NewRepoEvent{id: common.BytesToAddress(id[:]), name: name, address: address}
+		eventParsed := NewRepoEvent{Id: common.BytesToAddress(id[:]), Name: name, Address: address}
 		repos = append(repos, eventParsed)
     }
 
@@ -63,21 +63,21 @@ func GetRepos(ethClient *ethclient.Client) ([]NewRepoEvent, error) {
 
 func GetAddresses(repos []NewRepoEvent) (addresses []common.Address)  {
 	for _, r := range repos {
-		addresses = append(addresses, r.address)	
+		addresses = append(addresses, r.Address)	
 	}
 	return addresses
 }
 
 func GetNames(repos []NewRepoEvent) (names []string) {
 	for _, r := range repos {
-		names = append(names, r.name)	
+		names = append(names, r.Name)	
 	}
 	return names
 }
 
 func GetIds(repos []NewRepoEvent) (ids []common.Address) {
 	for _, r := range repos {
-		ids = append(ids, r.id)	
+		ids = append(ids, r.Id)	
 	}
 	return ids
 }

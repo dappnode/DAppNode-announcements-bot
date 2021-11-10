@@ -5,10 +5,11 @@ import (
 	"log"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/pablomendezroyo/DAppNode-announcements-bot/internal/eth"
 )
 
-func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, versionEvent *NewVersionEvent) {
-	message := fmt.Sprintf("New DAppNode package version!\nVersionId: %d\nSemantic version: %d", versionEvent.versionId, versionEvent.semanticVersion)
+func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, versionEvent *eth.NewVersionEvent) {
+	message := fmt.Sprintf("New DAppNode package version!\nVersionId: %d\nSemantic version: %d", versionEvent.VersionId, versionEvent.SemanticVersion)
 	err := discord.Open()
 	if err != nil {
 		err := fmt.Errorf("unable to open discord session: %w", err)
@@ -24,8 +25,8 @@ func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, v
 	discord.Close()
 }
 
-func WriteNewRepoMessage(discord *discordgo.Session, discordChannel string, repoEvent *NewRepoEvent) {
-	message := fmt.Sprintf("New DAppNode package %s!", repoEvent.name)
+func WriteNewRepoMessage(discord *discordgo.Session, discordChannel string, repoEvent *eth.NewRepoEvent) {
+	message := fmt.Sprintf("New DAppNode package %s!", repoEvent.Name)
 	err := discord.Open()
 	if err != nil {
 		err := fmt.Errorf("unable to open discord session: %w", err)

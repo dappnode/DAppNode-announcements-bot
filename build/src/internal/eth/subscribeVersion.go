@@ -48,7 +48,7 @@ func SubscribeNewVersion(ethClient *ethclient.Client, discord *discordgo.Session
                 // Parse event
                 versionId := event[0].(*big.Int)
                 semanticVersion := event[1].([3]uint16)
-                eventParsed := NewVersionEvent{versionId: versionId, semanticVersion: semanticVersion}
+                eventParsed := NewVersionEvent{VersionId: versionId, SemanticVersion: semanticVersion}
 
                 // Write New version message
                 WriteNewVersionMessage(discord, discordChannel, &eventParsed)
@@ -62,5 +62,5 @@ func ParseVersionEvent(event []interface{}) NewVersionEvent {
     versionId := event[0].(*big.Int)
     semanticVersion := event[1].([3]uint16)
 
-    return NewVersionEvent{versionId: versionId, semanticVersion: semanticVersion}
+    return NewVersionEvent{VersionId: versionId, SemanticVersion: semanticVersion}
 }

@@ -7,12 +7,12 @@ import (
 )
 
 type NewVersionEvent struct {
-    versionId *big.Int
-    semanticVersion [3]uint16
+    VersionId *big.Int
+    SemanticVersion [3]uint16
 }
 
 type NewRepoEvent struct {
-	id   common.Address
-	name string
-	address common.Address
+	Id   common.Address
+	Name string
+	Address common.Address
 } 

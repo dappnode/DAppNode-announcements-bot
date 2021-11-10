@@ -1,10 +1,11 @@
 package main
 
 import (
-	"announcements-bot/discord"
-	"announcements-bot/env"
-	"announcements-bot/eth"
 	"fmt"
+
+	"github.com/pablomendezroyo/DAppNode-announcements-bot/internal/discord"
+	"github.com/pablomendezroyo/DAppNode-announcements-bot/internal/env"
+	"github.com/pablomendezroyo/DAppNode-announcements-bot/internal/eth"
 )
 
 var gethRpc , discordToken , discordChannel string

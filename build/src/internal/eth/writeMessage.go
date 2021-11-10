@@ -8,7 +8,7 @@ import (
 )
 
 func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, versionEvent *NewVersionEvent) {
-	message := fmt.Sprintf("New DAppNode package version!\nVersionId: %d\nSemantic version: %d", versionEvent.versionId, versionEvent.semanticVersion)
+	message := fmt.Sprintf("New DAppNode package version!\nVersionId: %d\nSemantic version: %d", versionEvent.VersionId, versionEvent.SemanticVersion)
 	err := discord.Open()
 	if err != nil {
 		err := fmt.Errorf("unable to open discord session: %w", err)
@@ -25,7 +25,7 @@ func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, v
 }
 
 func WriteNewRepoMessage(discord *discordgo.Session, discordChannel string, repoEvent *NewRepoEvent) {
-	message := fmt.Sprintf("New DAppNode package %s!", repoEvent.name)
+	message := fmt.Sprintf("New DAppNode package %s!", repoEvent.Name)
 	err := discord.Open()
 	if err != nil {
 		err := fmt.Errorf("unable to open discord session: %w", err)

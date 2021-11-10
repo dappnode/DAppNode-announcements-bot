@@ -1,7 +1,6 @@
 package eth
 
 import (
-	"announcements-bot/env"
 	"context"
 	"math/big"
 	"os"
@@ -11,6 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/pablomendezroyo/DAppNode-announcements-bot/internal/env"
 )
 
 func init() {
@@ -53,10 +53,10 @@ func TestGetVersion(t *testing.T) {
 
 		eventParsed := ParseVersionEvent(event)
 		
-		if eventParsed.versionId.Cmp(big.NewInt(16)) != 0 {
+		if eventParsed.VersionId.Cmp(big.NewInt(16)) != 0 {
 			t.Error("Version ID is not 16")
 		}
-		if eventParsed.semanticVersion != [3]uint16{0, 1, 15} {
+		if eventParsed.SemanticVersion != [3]uint16{0, 1, 15} {
 			t.Error("Semantic version is not [0 1 15]")
 		}
     }

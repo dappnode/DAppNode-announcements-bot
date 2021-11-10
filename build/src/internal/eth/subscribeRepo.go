@@ -59,5 +59,5 @@ func ParseRepoEvent(event []interface{}) NewRepoEvent{
     name := event[1].(string)
     address := event[2].(common.Address)
 
-    return NewRepoEvent{id: common.BytesToAddress(id[:]), name: name, address: address}
+    return NewRepoEvent{Id: common.BytesToAddress(id[:]), Name: name, Address: address}
 }
