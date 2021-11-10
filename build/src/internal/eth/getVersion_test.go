@@ -1,9 +1,10 @@
 package eth
 
 import (
+	"announcements-bot/env"
 	"context"
-	"fmt"
 	"math/big"
+	"os"
 	"strings"
 	"testing"
 
@@ -12,12 +13,16 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+func init() {
+	env.LoadEnv()
+}
+
 func TestGetVersion(t *testing.T) {
-	t.Log("heyyy")
-	ethClient, err := GetEthClient("wss://mainnet.infura.io/ws/v3/e6c920580178424bbdf6dde266bfb5bd")
+	ethClient, err := GetEthClient(os.Getenv("GETH_RPC"))
 	if(err != nil){
 		t.Error(err)
 	}
+
 	contractAddress := common.HexToAddress("0xda33dA12E19a3579f1b522D0D215D2333431173e")
 	firstBlock := big.NewInt(13581149)
 	latestBlock := big.NewInt(13581151)
@@ -30,7 +35,6 @@ func TestGetVersion(t *testing.T) {
 		},
 	}
 
-
     logs, err := ethClient.FilterLogs(context.Background(), query)
     if err != nil {
         t.Error(err)
@@ -42,18 +46,18 @@ func TestGetVersion(t *testing.T) {
     }
 
 	for _, vLog := range logs {
-		// This smart contract has multiple events
-		// Continue until found "NewRepo"
         event, err := contractAbi.Unpack("NewVersion", vLog.Data)
         if err != nil {
             t.Error(err)
 		}
-		
-		// Parse event
-		versionId := event[0].(*big.Int)
-		semanticVersion := event[1].([3]uint16)
-		eventParsed := NewVersionEvent{versionId: versionId, semanticVersion: semanticVersion}
-		fmt.Println(eventParsed)
-    }
 
+		eventParsed := ParseVersionEvent(event)
+		
+		if eventParsed.versionId.Cmp(big.NewInt(16)) != 0 {
+			t.Error("Version ID is not 16")
+		}
+		if eventParsed.semanticVersion != [3]uint16{0, 1, 15} {
+			t.Error("Semantic version is not [0 1 15]")
+		}
+    }
 }

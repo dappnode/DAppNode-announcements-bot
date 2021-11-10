@@ -60,6 +60,7 @@ func GetRepos(ethClient *ethclient.Client) ([]NewRepoEvent, error) {
 }
 
 // Utils
+
 func GetAddresses(repos []NewRepoEvent) (addresses []common.Address)  {
 	for _, r := range repos {
 		addresses = append(addresses, r.address)	

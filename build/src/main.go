@@ -2,45 +2,16 @@ package main
 
 import (
 	"announcements-bot/discord"
+	"announcements-bot/env"
 	"announcements-bot/eth"
 	"fmt"
-	"log"
-	"os"
-
-	"github.com/joho/godotenv"
 )
 
 var gethRpc , discordToken , discordChannel string
 
 
 func init() {
-	fmt.Println("Setting up environment variables")
-
-	environment := os.Getenv("GO_ENV")
-	if environment == "development" {
-		err := godotenv.Load(".env")
-		if err != nil {
-			log.Fatal(err)
-		}
-		gethRpc = os.Getenv("GETH_RPC")
-		discordToken = os.Getenv("DISCORD_TOKEN")
-		discordChannel = os.Getenv("ANNOUNCEMENTS_CHANNEL_ID")
-	} else if environment == "production" {
-
-	} else {
-		panic("Environment not set")
-	}
-
-	// throw error if env vars are not set
-	if gethRpc == "" {
-		panic("gethRpc not set")
-	}
-	if discordToken == "" {
-		panic("discordToken not set")
-	}
-	if discordChannel == "" {
-		panic("discordChannel not set")
-	}
+	gethRpc, discordToken , discordChannel = env.LoadEnv()
 } 
   
 func main() {
@@ -54,7 +25,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// Get repossitories
+	// Get repositories
 	fmt.Println("Getting DAppNode packages...")
 	repos, err := eth.GetRepos(ethClient)
 	if err != nil {
@@ -69,16 +40,18 @@ func main() {
 		err := fmt.Errorf("unable to open discord session: %w", err)
 		fmt.Println(err)
 	}
+
+	eth.WriteNewRepoMessage(discord, discordChannel, &repos[0])
 	
 	// Start go rutine eth suscription to "NewVersion" event of all repos addresses
-	fmt.Println("Go rutine NewVersion event subscription...")
-	go eth.SubscribeNewVersion(ethClient, discord, discordChannel, repos)
+/* 	fmt.Println("Go rutine NewVersion event subscription...")
+	go eth.SubscribeNewVersion(ethClient, discord, discordChannel, repos) */
 
 	// Start go rutine eth suscription to "NewRepo" event of Registry 
-	fmt.Println("Go rutine NewRepo event subscription...")
-	go eth.SubscribeNewRepo(ethClient, discord, discordChannel)
+/* 	fmt.Println("Go rutine NewRepo event subscription...")
+	go eth.SubscribeNewRepo(ethClient, discord, discordChannel) */
 
 	fmt.Println("Application successfully started")
 	// Wait foerever
-	select{}
+	//select{}
 }

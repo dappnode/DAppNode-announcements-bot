@@ -45,14 +45,19 @@ func SubscribeNewRepo(client *ethclient.Client, discord *discordgo.Session, disc
                     continue
                 }
 
-                // Parse event
-                id := event[0].([32]uint8)
-                name := event[1].(string)
-                address := event[2].(common.Address)
-
                 // Write New version message
-                eventParsed := NewRepoEvent{id: common.BytesToAddress(id[:]), name: name, address: address}
+                eventParsed := ParseRepoEvent(event)
                 WriteNewRepoMessage(discord, discordChannel, &eventParsed)
         }
     }
+}
+
+// Utils
+
+func ParseRepoEvent(event []interface{}) NewRepoEvent{
+    id := event[0].([32]uint8)
+    name := event[1].(string)
+    address := event[2].(common.Address)
+
+    return NewRepoEvent{id: common.BytesToAddress(id[:]), name: name, address: address}
 }
