@@ -1,4 +1,4 @@
-package eth
+package params
 
 import (
 	"math/big"

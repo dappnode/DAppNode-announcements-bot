@@ -1,6 +1,8 @@
 package eth
 
 import (
+	"announcements-bot/discord"
+	"announcements-bot/params"
 	"context"
 	"fmt"
 	"log"
@@ -15,10 +17,10 @@ import (
 )
 
 // Subscribe to "NewRepo" events
-func SubscribeNewRepo(client *ethclient.Client, discord *discordgo.Session, discordChannel string) {
+func SubscribeNewRepo(client *ethclient.Client, dc *discordgo.Session, discordChannel string) {
 	contractAddress := common.HexToAddress("0x266bfdb2124a68beb6769dc887bd655f78778923")
 
-    contractAbi, err := abi.JSON(strings.NewReader(repositoryAbi))
+    contractAbi, err := abi.JSON(strings.NewReader(params.RepositoryAbi))
     if err != nil {
         log.Fatal(err)
     }
@@ -47,17 +49,17 @@ func SubscribeNewRepo(client *ethclient.Client, discord *discordgo.Session, disc
 
                 // Write New version message
                 eventParsed := ParseRepoEvent(event)
-                WriteNewRepoMessage(discord, discordChannel, &eventParsed)
+                discord.WriteNewRepoMessage(dc, discordChannel, &eventParsed)
         }
     }
 }
 
 // Utils
 
-func ParseRepoEvent(event []interface{}) NewRepoEvent{
+func ParseRepoEvent(event []interface{}) params.NewRepoEvent{
     id := event[0].([32]uint8)
     name := event[1].(string)
     address := event[2].(common.Address)
 
-    return NewRepoEvent{Id: common.BytesToAddress(id[:]), Name: name, Address: address}
+    return params.NewRepoEvent{Id: common.BytesToAddress(id[:]), Name: name, Address: address}
 }

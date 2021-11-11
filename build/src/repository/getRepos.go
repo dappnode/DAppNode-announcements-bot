@@ -1,6 +1,7 @@
-package eth
+package repository
 
 import (
+	"announcements-bot/params"
 	"context"
 	"math/big"
 	"strings"
@@ -11,7 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func GetRepos(ethClient *ethclient.Client) ([]NewRepoEvent, error) {
+func GetRepos(ethClient *ethclient.Client) ([]params.NewRepoEvent, error) {
 	contractAddress := common.HexToAddress("0x266bfdb2124a68beb6769dc887bd655f78778923")
 	firstBlock := big.NewInt(10153269)
 	latestBlock, err := ethClient.BlockNumber(context.Background())
@@ -32,12 +33,12 @@ func GetRepos(ethClient *ethclient.Client) ([]NewRepoEvent, error) {
         return nil, err
     }
 
-	contractAbi, err := abi.JSON(strings.NewReader(repositoryAbi))
+	contractAbi, err := abi.JSON(strings.NewReader(params.RepositoryAbi))
     if err != nil {
         return nil, err
     }
 
-	var repos []NewRepoEvent
+	var repos []params.NewRepoEvent
 
     for _, vLog := range logs {
 		// This smart contract has multiple events
@@ -52,32 +53,11 @@ func GetRepos(ethClient *ethclient.Client) ([]NewRepoEvent, error) {
 		name := event[1].(string)
 		address := event[2].(common.Address)
 
-		eventParsed := NewRepoEvent{Id: common.BytesToAddress(id[:]), Name: name, Address: address}
+		eventParsed := params.NewRepoEvent{Id: common.BytesToAddress(id[:]), Name: name, Address: address}
 		repos = append(repos, eventParsed)
     }
 
 	return repos, nil
 }
 
-// Utils
 
-func GetAddresses(repos []NewRepoEvent) (addresses []common.Address)  {
-	for _, r := range repos {
-		addresses = append(addresses, r.Address)	
-	}
-	return addresses
-}
-
-func GetNames(repos []NewRepoEvent) (names []string) {
-	for _, r := range repos {
-		names = append(names, r.Name)	
-	}
-	return names
-}
-
-func GetIds(repos []NewRepoEvent) (ids []common.Address) {
-	for _, r := range repos {
-		ids = append(ids, r.Id)	
-	}
-	return ids
-}

@@ -1,4 +1,4 @@
-module github.com/pablomendezroyo/DAppNode-announcements-bot
+module announcements-bot
 
 go 1.17
 
