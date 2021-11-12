@@ -7,14 +7,14 @@ This bot will be subscribed to:
 - Registry Smart Contracts (this is all the packages published): this suscription will return all new versions published
 - Repository Smart Contract: this suscription will return all new packages published
 
-# ENV
+### ENV
 
 The application has two modes deppending on the `GO_ENV` that can be set on the `docker-compose.yml`
 
 - Development: `GO_ENV=development`
 - Production: `GO_ENV=production`
 
-## Development
+#### Development
 
 To start the application in development mode is needed to configure the `test.env` file located at `/build/src/test.env`
 The values needed are:
@@ -23,7 +23,7 @@ The values needed are:
 - GETH_RPC= // An ethereum RPC with websockets
 - DISCORD_TOKEN= // A discord bot token
 
-## Production
+#### Production
 
 To start the application in production mode is needed to configure a `.env` file at `/build/src/test.env`
 Same values as in the test file
