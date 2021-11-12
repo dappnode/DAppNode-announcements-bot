@@ -5,7 +5,6 @@ import (
 	"announcements-bot/params"
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -22,7 +21,8 @@ func SubscribeNewRepo(client *ethclient.Client, dc *discordgo.Session, discordCh
 
     contractAbi, err := abi.JSON(strings.NewReader(params.RepositoryAbi))
     if err != nil {
-        log.Fatal(err)
+        err := fmt.Errorf(params.ErrorLog + "error parsing directory abi. %w", err)
+        panic(err)
     }
 
     query := ethereum.FilterQuery{
@@ -33,17 +33,19 @@ func SubscribeNewRepo(client *ethclient.Client, dc *discordgo.Session, discordCh
     logs := make(chan types.Log)
     sub, err := client.SubscribeFilterLogs(context.Background(), query, logs)
     if err != nil {
-        log.Fatal(err)
+        err := fmt.Errorf(params.ErrorLog + "error subscribing to logs. %w", err)
+        panic(err)
     }
 
     for {
         select {
             case err := <-sub.Err():
-                log.Fatal(err)
+                fmt.Println(err.Error())
             case vLog := <-logs:
-                fmt.Println(vLog) // pointer to event log
+                fmt.Printf(params.InfoLog + "new package released: %s\n", vLog)
                 event, err := contractAbi.Unpack("NewRepo", vLog.Data)
                 if err != nil {
+                    fmt.Printf(params.WarnLog + "error unpacking NewRepo event: %w\n", err)
                     continue
                 }
 

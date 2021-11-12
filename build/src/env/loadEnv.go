@@ -1,7 +1,9 @@
 package env
 
 import (
-	"log"
+	"announcements-bot/params"
+	"fmt"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -9,11 +11,22 @@ import (
 type Empty struct{}
 
 func LoadEnv() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(err)
+	goEnv := os.Getenv("GO_ENV")
+	if (goEnv == "") {
+		panic("GO_ENV is not set")
 	}
-/* 		packagePath := reflect.TypeOf(Empty{}).PkgPath()
-		_, packageName := path.Split(packagePath)
-		err := godotenv.Load(".env." + packageName) */
+	
+	if(goEnv == "production") {
+		err := godotenv.Load(".env")
+		if err != nil {
+			err := fmt.Errorf("unable to load env: %w", err)
+			panic(params.ErrorLog + err.Error())
+		}
+	} else {
+		err := godotenv.Load("test.env")
+		if err != nil {
+			err := fmt.Errorf("unable to load env: %w", err)
+			panic(params.ErrorLog + err.Error())
+		}
+	}
 }

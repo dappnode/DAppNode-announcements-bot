@@ -2,7 +2,6 @@ package repository
 
 import (
 	"announcements-bot/env"
-	"announcements-bot/eth"
 	"announcements-bot/params"
 	"context"
 	"math/big"
@@ -61,7 +60,7 @@ func TestGetVersion(t *testing.T) {
             t.Error(err)
 		}
 
-		eventParsed := eth.ParseVersionEvent(event)
+		eventParsed := ParseVersionEvent(event)
 		
 		if eventParsed.VersionId.Cmp(big.NewInt(16)) != 0 {
 			t.Error("Version ID is not 16")

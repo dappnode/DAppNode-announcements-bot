@@ -3,6 +3,7 @@ package main
 import (
 	"announcements-bot/env"
 	"announcements-bot/eth"
+	"announcements-bot/params"
 	"announcements-bot/repository"
 	"fmt"
 	"os"
@@ -22,54 +23,59 @@ func init() {
 
 	// throw error if env vars are not set
 	if gethRpc == "" {
-		panic("gethRpc not set")
+		panic(params.ErrorLog + "gethRpc not set")
 	}
 	if discordToken == "" {
-		panic("discordToken not set")
+		panic(params.ErrorLog + "discordToken not set")
 	}
 	if discordChannel == "" {
-		panic("discordChannel not set")
+		panic(params.ErrorLog + "discordChannel not set")
 	}
 } 
   
 func main() {
-	fmt.Println("=== Starting application ===")
+	fmt.Println(params.InfoLog + "============================")
+	fmt.Println(params.InfoLog + "=== Starting application ===")
+	fmt.Println(params.InfoLog + "============================")					  
 
 	// Connect to ETH node
-	fmt.Println("Connecting to Ethereum node...")
+	fmt.Println(params.InfoLog + "Connecting to Ethereum node...")
 	ethClient, err := getEthClient(gethRpc)
 	if err != nil {
 		err := fmt.Errorf("unable to connect to %s. %s", gethRpc, err)
-		fmt.Println(err)
+		panic(params.ErrorLog + err.Error())
 	}
 
 	// Get repositories
-	fmt.Println("Getting DAppNode packages...")
+	fmt.Println(params.InfoLog + "Getting DAppNode packages...")
 	repos, err := repository.GetRepos(ethClient)
 	if err != nil {
 		err := fmt.Errorf("unable to get repositories: %w", err)
-		fmt.Println(err)
+		panic(params.ErrorLog + err.Error())
 	}
 
-	fmt.Println(repos)
+	// Print repositories to be subscribed to
+	names := repository.GetNames(repos)
+	fmt.Printf(params.InfoLog + "Repositories to be subscribed to: %s\n", names)
 
 	// Get discord session
-	fmt.Println("Getting Discord session...")
+	fmt.Println(params.InfoLog + "Getting Discord session...")
 	dc, err := getDiscordSession(discordToken)
 	if err != nil {
 		err := fmt.Errorf("unable to open discord session: %w", err)
-		fmt.Println(err)
+		panic(params.ErrorLog + err.Error())
 	}
 
 	// Start go rutine eth suscription to "NewVersion" event of all repos addresses
-	fmt.Println("Go rutine NewVersion event subscription...")
+	fmt.Println(params.InfoLog + "Go rutine NewVersion event subscription...")
 	go eth.SubscribeNewVersion(ethClient, dc, discordChannel, repos) 
 
 	// Start go rutine eth suscription to "NewRepo" event of Registry 
- 	fmt.Println("Go rutine NewRepo event subscription...")
+ 	fmt.Println(params.InfoLog + "Go rutine NewRepo event subscription...")
 	go eth.SubscribeNewRepo(ethClient, dc, discordChannel) 
 
-	fmt.Println("Application successfully started")
+	fmt.Println(params.InfoLog + "Application successfully started")
+
 	// Wait foerever
 	select{}
 }

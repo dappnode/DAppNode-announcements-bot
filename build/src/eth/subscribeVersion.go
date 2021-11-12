@@ -3,9 +3,9 @@ package eth
 import (
 	"announcements-bot/discord"
 	"announcements-bot/params"
+	"announcements-bot/repository"
 	"context"
 	"fmt"
-	"log"
 	"math/big"
 	"strings"
 
@@ -22,28 +22,31 @@ func SubscribeNewVersion(ethClient *ethclient.Client, dc *discordgo.Session, dis
     // Create query with all repos addresses
     contractAbi, err := abi.JSON(strings.NewReader(params.RegistryAbi))
     if err != nil {
-        log.Fatal(err)
+        err := fmt.Errorf(params.ErrorLog + "error parsing registry abi. %w", err)
+        panic(err)
     }
 
 	query := ethereum.FilterQuery{
-        Addresses:  GetAddresses(repos),
+        Addresses:  repository.GetAddresses(repos),
         Topics:     [][]common.Hash{{contractAbi.Events["NewVersion"].ID}},
     }
 
     logs := make(chan types.Log)
     sub, err := ethClient.SubscribeFilterLogs(context.Background(), query, logs)
     if err != nil {
-        log.Fatal(err)
+        err := fmt.Errorf(params.ErrorLog + "error subscribing to registry logs. %w", err)
+        panic(err)
     }
 
     for {
         select {
             case err := <-sub.Err():
-                log.Fatal(err)
+                fmt.Println(err.Error())
             case vLog := <-logs:       
-                fmt.Println(vLog) // pointer to event log
+                fmt.Printf(params.InfoLog + "new version released: %s\n", vLog)
                 event, err := contractAbi.Unpack("NewVersion", vLog.Data)
                 if err != nil {
+                    fmt.Printf(params.WarnLog + "error unpacking NewVersion event: %w\n", err)
                     continue
                 }
 
@@ -64,32 +67,3 @@ func SubscribeNewVersion(ethClient *ethclient.Client, dc *discordgo.Session, dis
     }
 }
 
-// Utils
-
-func ParseVersionEvent(event []interface{}) params.NewVersionEvent {
-    versionId := event[0].(*big.Int)
-    semanticVersion := event[1].([3]uint16)
-
-    return params.NewVersionEvent{VersionId: versionId, SemanticVersion: semanticVersion}
-}
-
-func GetAddresses(repos []params.NewRepoEvent) (addresses []common.Address)  {
-	for _, r := range repos {
-		addresses = append(addresses, r.Address)	
-	}
-	return addresses
-}
-
-func GetNames(repos []params.NewRepoEvent) (names []string) {
-	for _, r := range repos {
-		names = append(names, r.Name)	
-	}
-	return names
-}
-
-func GetIds(repos []params.NewRepoEvent) (ids []common.Address) {
-	for _, r := range repos {
-		ids = append(ids, r.Id)	
-	}
-	return ids
-}
