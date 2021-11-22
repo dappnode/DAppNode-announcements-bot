@@ -15,7 +15,7 @@ import (
 
 func GetRepos(ethClient *ethclient.Client) ([]params.NewRepoEvent, error) {
 	contractAddress := common.HexToAddress("0x266bfdb2124a68beb6769dc887bd655f78778923")
-	firstBlock := big.NewInt(10153269)
+	firstBlock := big.NewInt(0)
 	latestBlock, err := ethClient.BlockNumber(context.Background())
 	if err != nil {
 		return nil, err
