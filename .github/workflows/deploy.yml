@@ -25,7 +25,7 @@ jobs:
           context: ./build
           file: Dockerfile
           push: true
-          tags: ghcr.io/dappnode/DAppNode-announcements-bot:latest
+          tags: ghcr.io/dappnode/dappnode-announcements-bot:latest
       # Tell the watchtower instance with the cert-api to pull its image
       - name: Trigger cert-api webhook
         run: |

@@ -2,8 +2,8 @@ version: "3.9"
 
 services:
   bot:
-    container_name: DAppNode-announcements-bot
-    image: ghcr.io/dappnode/DAppNode-announcements-bot:latest
+    container_name: dappnode-announcements-bot
+    image: ghcr.io/dappnode/dappnode-announcements-bot:latest
     build:
       context: "./build"
     environment:
