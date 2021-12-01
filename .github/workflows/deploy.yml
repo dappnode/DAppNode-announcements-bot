@@ -23,7 +23,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./build
-          file: Dockerfile
           push: true
           tags: ghcr.io/dappnode/dappnode-announcements-bot:latest
       # Tell the watchtower instance with the cert-api to pull its image
