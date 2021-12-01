@@ -17,11 +17,12 @@ func LoadEnv() {
 	}
 	
 	if(goEnv == "production") {
-		err := godotenv.Load(".env")
+		/* err := godotenv.Load(".env")
 		if err != nil {
 			err := fmt.Errorf("unable to load env: %w", err)
 			panic(params.ErrorLog + err.Error())
-		}
+		} */
+		return
 	} else {
 		err := godotenv.Load("test.env")
 		if err != nil {
