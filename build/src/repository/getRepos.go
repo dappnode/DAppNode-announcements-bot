@@ -47,7 +47,7 @@ func GetRepos(ethClient *ethclient.Client) ([]params.NewRepoEvent, error) {
 		// Continue until found "NewRepo"
         event, err := contractAbi.Unpack("NewRepo", vLog.Data)
         if err != nil {
-			fmt.Printf(params.WarnLog + "Error unpacking NewRepo event: %w\n", err)
+			fmt.Printf(params.WarnLog + "Error unpacking NewRepo event: %w\n", err.Error())
             continue
 		}
 

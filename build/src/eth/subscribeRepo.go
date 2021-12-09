@@ -22,7 +22,7 @@ func SubscribeNewRepo(client *ethclient.Client, dc *discordgo.Session, discordCh
     contractAbi, err := abi.JSON(strings.NewReader(params.RepositoryAbi))
     if err != nil {
         err := fmt.Errorf(params.ErrorLog + "error parsing directory abi. %w", err)
-        panic(err)
+        panic(err.Error())
     }
 
     query := ethereum.FilterQuery{
@@ -34,7 +34,7 @@ func SubscribeNewRepo(client *ethclient.Client, dc *discordgo.Session, discordCh
     sub, err := client.SubscribeFilterLogs(context.Background(), query, logs)
     if err != nil {
         err := fmt.Errorf(params.ErrorLog + "error subscribing to logs. %w", err)
-        panic(err)
+        panic(err.Error())
     }
 
     for {
@@ -45,7 +45,7 @@ func SubscribeNewRepo(client *ethclient.Client, dc *discordgo.Session, discordCh
                 fmt.Printf(params.InfoLog + "new package released: %s\n", vLog)
                 event, err := contractAbi.Unpack("NewRepo", vLog.Data)
                 if err != nil {
-                    fmt.Printf(params.WarnLog + "error unpacking NewRepo event: %w\n", err)
+                    fmt.Printf(params.WarnLog + "error unpacking NewRepo event: %w\n", err.Error())
                     continue
                 }
 

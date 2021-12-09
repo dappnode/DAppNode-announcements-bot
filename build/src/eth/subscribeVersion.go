@@ -23,7 +23,7 @@ func SubscribeNewVersion(ethClient *ethclient.Client, dc *discordgo.Session, dis
     contractAbi, err := abi.JSON(strings.NewReader(params.RegistryAbi))
     if err != nil {
         err := fmt.Errorf(params.ErrorLog + "error parsing registry abi. %w", err)
-        panic(err)
+        panic(err.Error())
     }
 
 	query := ethereum.FilterQuery{
@@ -34,7 +34,7 @@ func SubscribeNewVersion(ethClient *ethclient.Client, dc *discordgo.Session, dis
     logs := make(chan types.Log)
     sub, err := ethClient.SubscribeFilterLogs(context.Background(), query, logs)
     if err != nil {
-        err := fmt.Errorf(params.ErrorLog + "error subscribing to registry logs. %w", err)
+        err := fmt.Errorf(params.ErrorLog + "error subscribing to registry logs. %w", err.Error())
         panic(err)
     }
 
@@ -46,7 +46,7 @@ func SubscribeNewVersion(ethClient *ethclient.Client, dc *discordgo.Session, dis
                 fmt.Printf(params.InfoLog + "new version released: %s\n", vLog)
                 event, err := contractAbi.Unpack("NewVersion", vLog.Data)
                 if err != nil {
-                    fmt.Printf(params.WarnLog + "error unpacking NewVersion event: %w\n", err)
+                    fmt.Printf(params.WarnLog + "error unpacking NewVersion event: %w\n", err.Error())
                     continue
                 }
 
