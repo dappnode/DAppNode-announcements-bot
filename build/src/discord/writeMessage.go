@@ -8,7 +8,7 @@ import (
 )
 
 func WriteNewVersionMessage(discord *discordgo.Session, discordChannel string, versionEvent *params.NewVersionEvent, packageName string) {
-	message := fmt.Sprintf(":new: New DAppNode package version for **%s**! :up:\n\n:arrow_up: New version: **%d.%d.%d**\n\n:point_right: Update it here **http://my.dappnode/#/installer/%s.dnp.dappnode.eth**", packageName, versionEvent.SemanticVersion[0], versionEvent.SemanticVersion[1], versionEvent.SemanticVersion[2], packageName)
+	message := fmt.Sprintf(":new: New DAppNode package version for **%s**! :up:\n\n:arrow_up: New version: **%d.%d.%d**\n\n:point_right: Wait for the auto-update or manually update it by clicking here **http://my.dappnode/#/installer/%s.dnp.dappnode.eth**", packageName, versionEvent.SemanticVersion[0], versionEvent.SemanticVersion[1], versionEvent.SemanticVersion[2], packageName)
 	err := discord.Open()
 	if err != nil {
 		fmt.Printf(params.WarnLog + "unable to open discord session: %w\n", err.Error())
